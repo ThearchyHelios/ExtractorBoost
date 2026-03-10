@@ -1,226 +1,168 @@
-﻿using Colossal;
+using Colossal;
 using Colossal.IO.AssetDatabase;
-using Game.Input;
 using Game.Modding;
 using Game.Settings;
 using Game.UI;
-using Game.UI.Widgets;
+using Game.Economy;
 using System.Collections.Generic;
 
 namespace ExtractorBoost
 {
     [FileLocation(nameof(ExtractorBoost))]
-    [SettingsUIGroupOrder(kButtonGroup, kToggleGroup, kSliderGroup, kDropdownGroup, kKeybindingGroup)]
-    [SettingsUIShowGroupName(kButtonGroup, kToggleGroup, kSliderGroup, kDropdownGroup, kKeybindingGroup)]
-    [SettingsUIKeyboardAction(Mod.kVectorActionName, ActionType.Vector2, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" }, processors: new string[] { "ScaleVector2(x=100,y=100)" })]
-    [SettingsUIKeyboardAction(Mod.kAxisActionName, ActionType.Axis, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" })]
-    [SettingsUIKeyboardAction(Mod.kButtonActionName, ActionType.Button, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" })]
-    [SettingsUIGamepadAction(Mod.kButtonActionName, ActionType.Button, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" })]
-    [SettingsUIMouseAction(Mod.kButtonActionName, ActionType.Button, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" })]
+    [SettingsUIGroupOrder(kGlobalGroup, kAgricultureGroup, kMiningGroup, kForestryGroup)]
+    [SettingsUIShowGroupName(kGlobalGroup, kAgricultureGroup, kMiningGroup, kForestryGroup)]
     public class Setting : ModSetting
     {
         public const string kSection = "Main";
+        public const string kGlobalGroup = "Global";
+        public const string kAgricultureGroup = "Agriculture";
+        public const string kMiningGroup = "Mining";
+        public const string kForestryGroup = "Forestry";
 
-        public const string kButtonGroup = "Button";
-        public const string kToggleGroup = "Toggle";
-        public const string kSliderGroup = "Slider";
-        public const string kDropdownGroup = "Dropdown";
-        public const string kKeybindingGroup = "KeyBinding";
+        public Setting(IMod mod) : base(mod) { }
 
-        public Setting(IMod mod) : base(mod)
-        {
+        // Global
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kGlobalGroup)]
+        public int GlobalMultiplier { get; set; } = 1;
 
-        }
-
-        [SettingsUISection(kSection, kButtonGroup)]
-        public bool Button { set { Mod.log.Info("Button clicked"); } }
-
-        [SettingsUIButton]
-        [SettingsUIConfirmation]
-        [SettingsUISection(kSection, kButtonGroup)]
-        public bool ButtonWithConfirmation { set { Mod.log.Info("ButtonWithConfirmation clicked"); } }
-
-        [SettingsUISection(kSection, kToggleGroup)]
-        public bool Toggle { get; set; }
-
-        [SettingsUISlider(min = 0, max = 100, step = 1, scalarMultiplier = 1, unit = Unit.kDataMegabytes)]
-        [SettingsUISection(kSection, kSliderGroup)]
-        public int IntSlider { get; set; }
-
-        [SettingsUIDropdown(typeof(Setting), nameof(GetIntDropdownItems))]
-        [SettingsUISection(kSection, kDropdownGroup)]
-        public int IntDropdown { get; set; }
-
-        [SettingsUISection(kSection, kDropdownGroup)]
-        public SomeEnum EnumDropdown { get; set; } = SomeEnum.Value1;
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.Q, Mod.kButtonActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding KeyboardBinding { get; set; }
-
-        [SettingsUIMouseBinding(BindingMouse.Forward, Mod.kButtonActionName)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding MouseBinding { get; set; }
-
-        [SettingsUIGamepadBinding(BindingGamepad.Cross, Mod.kButtonActionName)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding GamepadBinding { get; set; }
-
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.DownArrow, AxisComponent.Negative, Mod.kAxisActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding FloatBindingNegative { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.UpArrow, AxisComponent.Positive, Mod.kAxisActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding FloatBindingPositive { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.S, Vector2Component.Down, Mod.kVectorActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding Vector2BindingDown { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.W, Vector2Component.Up, Mod.kVectorActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding Vector2BindingUp { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.A, Vector2Component.Left, Mod.kVectorActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding Vector2BindingLeft { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.D, Vector2Component.Right, Mod.kVectorActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding Vector2BindingRight { get; set; }
-
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public bool ResetBindings
+        [SettingsUISection(kSection, kGlobalGroup)]
+        public bool ResetToDefault
         {
             set
             {
-                Mod.log.Info("Reset key bindings");
-                ResetKeyBindings();
+                SetDefaults();
+                ApplyAndSave();
             }
         }
 
+        // Agriculture
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kAgricultureGroup)]
+        public int GrainMultiplier { get; set; } = 1;
 
-        public DropdownItem<int>[] GetIntDropdownItems()
-        {
-            var items = new List<DropdownItem<int>>();
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kAgricultureGroup)]
+        public int VegetableMultiplier { get; set; } = 1;
 
-            for (var i = 0; i < 3; i += 1)
-            {
-                items.Add(new DropdownItem<int>()
-                {
-                    value = i,
-                    displayName = i.ToString(),
-                });
-            }
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kAgricultureGroup)]
+        public int CottonMultiplier { get; set; } = 1;
 
-            return items.ToArray();
-        }
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kAgricultureGroup)]
+        public int LivestockMultiplier { get; set; } = 1;
+
+        // Mining
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kMiningGroup)]
+        public int OilMultiplier { get; set; } = 1;
+
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kMiningGroup)]
+        public int OreMultiplier { get; set; } = 1;
+
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kMiningGroup)]
+        public int CoalMultiplier { get; set; } = 1;
+
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kMiningGroup)]
+        public int StoneMultiplier { get; set; } = 1;
+
+        // Forestry
+        [SettingsUISlider(min = 1, max = 10, step = 1, scalarMultiplier = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kSection, kForestryGroup)]
+        public int WoodMultiplier { get; set; } = 1;
 
         public override void SetDefaults()
         {
-            throw new System.NotImplementedException();
+            GlobalMultiplier = 1;
+            GrainMultiplier = 1;
+            VegetableMultiplier = 1;
+            CottonMultiplier = 1;
+            LivestockMultiplier = 1;
+            OilMultiplier = 1;
+            OreMultiplier = 1;
+            CoalMultiplier = 1;
+            StoneMultiplier = 1;
+            WoodMultiplier = 1;
         }
 
-        public enum SomeEnum
+        public int GetResourceMultiplier(Resource resource)
         {
-            Value1,
-            Value2,
-            Value3,
+            int specific = 1;
+            if ((resource & Resource.Grain) != 0) specific = GrainMultiplier;
+            else if ((resource & Resource.Vegetables) != 0) specific = VegetableMultiplier;
+            else if ((resource & Resource.Cotton) != 0) specific = CottonMultiplier;
+            else if ((resource & Resource.Livestock) != 0) specific = LivestockMultiplier;
+            else if ((resource & Resource.Oil) != 0) specific = OilMultiplier;
+            else if ((resource & Resource.Ore) != 0) specific = OreMultiplier;
+            else if ((resource & Resource.Coal) != 0) specific = CoalMultiplier;
+            else if ((resource & Resource.Stone) != 0) specific = StoneMultiplier;
+            else if ((resource & Resource.Wood) != 0) specific = WoodMultiplier;
+            return specific * GlobalMultiplier;
         }
     }
 
     public class LocaleEN : IDictionarySource
     {
         private readonly Setting m_Setting;
+
         public LocaleEN(Setting setting)
         {
             m_Setting = setting;
         }
+
         public IEnumerable<KeyValuePair<string, string>> ReadEntries(IList<IDictionaryEntryError> errors, Dictionary<string, int> indexCounts)
         {
             return new Dictionary<string, string>
             {
-                { m_Setting.GetSettingsLocaleID(), "ExtractorBoost" },
+                { m_Setting.GetSettingsLocaleID(), "Extractor Boost" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kSection), "Main" },
 
-                { m_Setting.GetOptionGroupLocaleID(Setting.kButtonGroup), "Buttons" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kToggleGroup), "Toggle" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSliderGroup), "Sliders" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kDropdownGroup), "Dropdowns" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kKeybindingGroup), "Key bindings" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kGlobalGroup), "Global" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kAgricultureGroup), "Agriculture" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kMiningGroup), "Mining" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kForestryGroup), "Forestry" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Button)), "Button" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Button)), $"Simple single button. It should be bool property with only setter or use [{nameof(SettingsUIButtonAttribute)}] to make button from bool property with setter and getter" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.GlobalMultiplier)), "Global Multiplier" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.GlobalMultiplier)), "Multiplied on top of each resource's individual multiplier (e.g. 2x global × 3x grain = 6x grain output)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ButtonWithConfirmation)), "Button with confirmation" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ButtonWithConfirmation)), $"Button can show confirmation message. Use [{nameof(SettingsUIConfirmationAttribute)}]" },
-                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ButtonWithConfirmation)), "is it confirmation text which you want to show here?" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetToDefault)), "Reset to Default" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetToDefault)), "Reset all multipliers back to 1x" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Toggle)), "Toggle" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Toggle)), $"Use bool property with setter and getter to get toggable option" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.GrainMultiplier)), "Grain" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.GrainMultiplier)), "Production multiplier for grain extractors" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.IntSlider)), "Int slider" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.IntSlider)), $"Use int property with getter and setter and [{nameof(SettingsUISliderAttribute)}] to get int slider" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.VegetableMultiplier)), "Vegetables" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.VegetableMultiplier)), "Production multiplier for vegetable extractors" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.IntDropdown)), "Int dropdown" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.IntDropdown)), $"Use int property with getter and setter and [{nameof(SettingsUIDropdownAttribute)}(typeof(SomeType), nameof(SomeMethod))] to get int dropdown: Method must be static or instance of your setting class with 0 parameters and returns {typeof(DropdownItem<int>).Name}" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CottonMultiplier)), "Cotton" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CottonMultiplier)), "Production multiplier for cotton extractors" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnumDropdown)), "Simple enum dropdown" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnumDropdown)), $"Use any enum property with getter and setter to get enum dropdown" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.LivestockMultiplier)), "Livestock" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.LivestockMultiplier)), "Production multiplier for livestock extractors" },
 
-                { m_Setting.GetEnumValueLocaleID(Setting.SomeEnum.Value1), "Value 1" },
-                { m_Setting.GetEnumValueLocaleID(Setting.SomeEnum.Value2), "Value 2" },
-                { m_Setting.GetEnumValueLocaleID(Setting.SomeEnum.Value3), "Value 3" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilMultiplier)), "Oil" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilMultiplier)), "Production multiplier for oil extractors" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.KeyboardBinding)), "Keyboard binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.KeyboardBinding)), $"Keyboard binding of Button input action" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OreMultiplier)), "Ore" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OreMultiplier)), "Production multiplier for ore extractors" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MouseBinding)), "Mouse binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.MouseBinding)), $"Mouse binding of Button input action" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalMultiplier)), "Coal" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalMultiplier)), "Production multiplier for coal extractors" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.GamepadBinding)), "Gamepad binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.GamepadBinding)), $"Gamepad binding of Button input action" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.StoneMultiplier)), "Stone" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.StoneMultiplier)), "Production multiplier for stone extractors" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FloatBindingNegative)), "Negative binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FloatBindingNegative)), $"Negative component of Axis input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FloatBindingPositive)), "Positive binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FloatBindingPositive)), $"Positive component of Axis input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Vector2BindingDown)), "Keyboard binding down" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Vector2BindingDown)), $"Down component of Vector input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Vector2BindingUp)), "Keyboard binding up" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Vector2BindingUp)), $"Up component of Vector input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Vector2BindingLeft)), "Keyboard binding left" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Vector2BindingLeft)), $"Left component of Vector input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Vector2BindingRight)), "Keyboard binding right" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Vector2BindingRight)), $"Right component of Vector input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetBindings)), "Reset key bindings" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetBindings)), $"Reset all key bindings of the mod" },
-
-                { m_Setting.GetBindingKeyLocaleID(Mod.kButtonActionName), "Button key" },
-
-                { m_Setting.GetBindingKeyLocaleID(Mod.kAxisActionName, AxisComponent.Negative), "Negative key" },
-                { m_Setting.GetBindingKeyLocaleID(Mod.kAxisActionName, AxisComponent.Positive), "Positive key" },
-
-                { m_Setting.GetBindingKeyLocaleID(Mod.kVectorActionName, Vector2Component.Down), "Down key" },
-                { m_Setting.GetBindingKeyLocaleID(Mod.kVectorActionName, Vector2Component.Up), "Up key" },
-                { m_Setting.GetBindingKeyLocaleID(Mod.kVectorActionName, Vector2Component.Left), "Left key" },
-                { m_Setting.GetBindingKeyLocaleID(Mod.kVectorActionName, Vector2Component.Right), "Right key" },
-
-                { m_Setting.GetBindingMapLocaleID(), "Mod settings sample" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.WoodMultiplier)), "Wood" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.WoodMultiplier)), "Production multiplier for wood extractors" },
             };
         }
 
         public void Unload()
         {
-
         }
     }
 }
