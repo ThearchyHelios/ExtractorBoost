@@ -21,6 +21,8 @@ namespace ExtractorBoost
             m_Setting = new Setting(this);
             m_Setting.RegisterInOptionsUI();
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(m_Setting));
+            GameManager.instance.localizationManager.AddSource("zh-HANS", new LocaleZH(m_Setting));
+            GameManager.instance.localizationManager.AddSource("zh-HANT", new LocaleZH(m_Setting));
 
             AssetDatabase.global.LoadSettings(nameof(ExtractorBoost), m_Setting, new Setting(this));
 

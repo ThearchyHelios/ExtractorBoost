@@ -18,7 +18,7 @@ namespace ExtractorBoost.Systems
         private static readonly Resource kExtractableResources =
             Resource.Grain | Resource.Vegetables | Resource.Cotton | Resource.Livestock |
             Resource.Oil | Resource.Ore | Resource.Coal | Resource.Stone |
-            Resource.Wood;
+            Resource.Wood | Resource.Fish;
 
         protected override void OnCreate()
         {
@@ -107,7 +107,6 @@ namespace ExtractorBoost.Systems
             unchecked
             {
                 int hash = 17;
-                hash = hash * 31 + s.GlobalMultiplier;
                 hash = hash * 31 + s.GrainMultiplier;
                 hash = hash * 31 + s.VegetableMultiplier;
                 hash = hash * 31 + s.CottonMultiplier;
@@ -117,6 +116,7 @@ namespace ExtractorBoost.Systems
                 hash = hash * 31 + s.CoalMultiplier;
                 hash = hash * 31 + s.StoneMultiplier;
                 hash = hash * 31 + s.WoodMultiplier;
+                hash = hash * 31 + s.FishMultiplier;
                 return hash;
             }
         }

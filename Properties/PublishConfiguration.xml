@@ -4,11 +4,40 @@
 	<!--Name of the mod to display to players-->
 	<DisplayName Value="ExtractorBoost" />
 	<!--Short description of the mod-->
-	<ShortDescription Value="Boosts raw resource output from all extractor buildings — mining, oil, farming, and forestry — so your city can actually keep up with demand" />
+	<ShortDescription Value="Boost extractor output with per-resource multipliers / 独立调节每种原材料的采集倍率" />
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
-	<!--LongDescription Value="Boosts raw resource output from all extractor buildings — mining, oil, farming, and forestry — so your city can actually keep up with demand" /-->
 	<LongDescription>
-Boosts raw resource output from all extractor buildings — mining, oil, farming, and forestry — so your city can actually keep up with demand
+# Extractor Boost
+
+Boost raw resource output from all extractor buildings with individual per-resource multiplier sliders (1-10x).
+
+## Supported Resources
+- **Agriculture**: Grain, Vegetables, Cotton, Livestock
+- **Mining**: Oil, Ore, Coal, Stone
+- **Forestry**: Wood
+- **Fishing**: Fish
+
+## Features
+- Individual multiplier slider for each resource type
+- Settings persist across game sessions
+- Reset all multipliers to default with one click
+
+---
+
+# 采集倍率增强
+
+为所有采集类建筑提供独立的产量倍率滑块（1-10倍），让你的城市不再为原材料供不应求而烦恼。
+
+## 支持的资源
+- **农业**: 谷物、蔬菜、棉花、畜牧
+- **采矿**: 石油、矿石、煤炭、石材
+- **林业**: 木材
+- **渔业**: 鱼类
+
+## 使用方式
+- 每种资源拥有独立的倍率滑块
+- 设置在游戏重启后自动保存
+- 一键重置所有倍率至默认值
 	</LongDescription>
 	<!--Thumbnail-->
 	<Thumbnail Value="Properties/Thumbnail.png" />
@@ -19,7 +48,7 @@ Boosts raw resource output from all extractor buildings — mining, oil, farming
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.0" />
+	<ModVersion Value="1.1" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.5.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -27,11 +56,16 @@ Boosts raw resource output from all extractor buildings — mining, oil, farming
 	<!--Required DLC, can be set multiple times. Supported values are "Landmark Buildings", "San Fransisco Set", "Beach Properties", "Urban Promenades", "Modern Architecture"-->
 	<!--<RequiredDLC Value="" />-->
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
-	<!-- <ChangeLog Value="" /> -->
-	<!--<ChangeLog>
-	</ChangeLog>-->
+	<ChangeLog>
+- Added Fish resource support (Fishing category)
+- Added Chinese (Simplified/Traditional) localization for all settings
+- Added bilingual (EN/CN) mod description
+- 新增鱼类资源支持（渔业分类）
+- 新增设置界面中文翻译
+- 新增中英双语mod说明
+	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
-	<!--<ExternalLink Type="" Url="" />-->
+	<ExternalLink Type="github" Url="https://github.com/ThearchyHelios/ExtractorBoost" />
 	<!--Supported values Public, Private, Unlisted-->
 	<AccessLevel Value="Public" />
 </Publish>
