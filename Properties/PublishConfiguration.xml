@@ -48,7 +48,7 @@ Boost raw resource output from all extractor buildings with individual per-resou
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.1" />
+	<ModVersion Value="1.3" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.5.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -57,15 +57,12 @@ Boost raw resource output from all extractor buildings with individual per-resou
 	<!--<RequiredDLC Value="" />-->
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
 	<ChangeLog>
-- Added Fish resource support (Fishing category)
-- Added Chinese (Simplified/Traditional) localization for all settings
-- Added bilingual (EN/CN) mod description
-- 新增鱼类资源支持（渔业分类）
-- 新增设置界面中文翻译
-- 新增中英双语mod说明
+		- Fixed an issue that could prevent settings from being saved correctly
+		- 修复了一个可能导致设置无法被正确保存的问题
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/ThearchyHelios/ExtractorBoost" />
+	<ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />
 	<!--Supported values Public, Private, Unlisted-->
 	<AccessLevel Value="Public" />
 </Publish>
